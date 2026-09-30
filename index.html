@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>HomeMesh Mobile UX Demo</title>
+<style>
+:root{
+  --bg:#f4f5f7; --surface:#ffffff; --ink:#101114; --muted:#6f7279; --line:#e7e8eb;
+  --accent:#ff3b5c; --accent2:#6b5cff; --green:#21a366; --amber:#f2a93b; --blue:#4776ff;
+  --shadow:0 20px 70px rgba(27,31,43,.18); --r:24px;
+}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;background:radial-gradient(circle at 20% 10%,#ffffff 0,#f4f5f7 34%,#eceef2 100%);color:var(--ink)}
+button,input,select{font:inherit} button{cursor:pointer}
+.stage{min-height:100vh;display:grid;place-items:center;padding:24px}.phone{width:390px;height:844px;background:var(--surface);border:1px solid #d9dbe0;border-radius:42px;box-shadow:var(--shadow);overflow:hidden;position:relative}
+.status{height:30px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-size:12px;font-weight:700;background:#fff}.app{height:814px;position:relative;background:var(--bg)}
+.screen{position:absolute;inset:0;display:none;flex-direction:column;background:var(--bg)}.screen.active{display:flex}.topbar{height:58px;padding:10px 16px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);z-index:4}.topbar h1{font-size:18px;margin:0;flex:1}.topbar .ghost{border:0;background:transparent;font-size:20px}.content{padding:16px 16px 108px;overflow:auto;flex:1}.content.onboarding{padding-bottom:24px}
+.hero{padding:30px 20px 18px;background:linear-gradient(180deg,#fff 0,#fbfbfd 100%)}.logo{display:flex;align-items:center;gap:10px;font-weight:850;font-size:24px}.logo-dot{width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#ff805f);display:grid;place-items:center;color:white;font-size:18px;box-shadow:0 8px 22px rgba(255,59,92,.25)}.hero h2{font-size:30px;line-height:1.15;margin:28px 0 10px}.hero p{color:var(--muted);line-height:1.6;margin:0 0 20px}.btn{width:100%;border:0;border-radius:16px;padding:15px 18px;font-weight:800;background:var(--ink);color:white;box-shadow:0 8px 18px rgba(0,0,0,.09)}.btn.secondary{background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:none}.btn.soft{background:#fff0f3;color:#d82848;box-shadow:none}.btn.sm{width:auto;padding:10px 13px;border-radius:12px;font-size:13px}.sp{height:10px}.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:12px;box-shadow:0 8px 24px rgba(38,44,60,.04)}.card h3{margin:0 0 8px;font-size:16px}.card p{margin:0;color:var(--muted);font-size:13px;line-height:1.55}.eyebrow{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--accent);text-transform:uppercase}.title{font-size:26px;line-height:1.2;margin:8px 0}.subtitle{font-size:14px;color:var(--muted);line-height:1.55;margin:0 0 16px}.notice{display:flex;gap:12px;padding:14px;background:#f8f8fb;border-radius:16px;margin:12px 0}.notice .ico{font-size:20px}.notice b{display:block;font-size:13px;margin-bottom:4px}.notice span{font-size:12px;color:var(--muted);line-height:1.45}.choice{display:flex;gap:12px;padding:15px;border:1px solid var(--line);border-radius:18px;background:white;margin:10px 0;align-items:center}.choice:hover{border-color:#cfd2d9}.choice .icon{width:42px;height:42px;border-radius:14px;background:#f2f3f7;display:grid;place-items:center;font-size:22px}.choice .meta{flex:1}.choice .meta b{font-size:15px}.choice .meta div{color:var(--muted);font-size:12px;margin-top:3px}.choice .chev{color:#9da1aa}.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:7px 10px;background:#f1f2f6;font-size:12px;font-weight:700}.pill.green{background:#eaf8f1;color:#15784d}.pill.red{background:#fff0f3;color:#cb2948}.pill.blue{background:#eef2ff;color:#3e5ed6}.row{display:flex;align-items:center;gap:10px}.row.between{justify-content:space-between}.tiny{font-size:11px;color:var(--muted)}
+.map{position:relative;background:linear-gradient(180deg,#f7f7fa,#f0f1f5);border:1px solid #e3e4e9;border-radius:22px;height:290px;overflow:hidden}.room{position:absolute;border:1.5px solid #d8dbe3;background:rgba(255,255,255,.75);display:flex;align-items:flex-start;justify-content:flex-start;padding:10px;font-size:11px;font-weight:800}.room small{display:block;color:var(--muted);font-weight:600}.r1{left:10px;top:10px;width:166px;height:118px;border-radius:16px 0 0 0}.r2{right:10px;top:10px;width:184px;height:118px;border-radius:0 16px 0 0}.r3{left:10px;bottom:10px;width:220px;height:142px;border-radius:0 0 0 16px}.r4{right:10px;bottom:10px;width:130px;height:142px;border-radius:0 0 16px 0}.person{position:absolute;min-width:42px;height:42px;border-radius:50%;background:#fff;display:grid;place-items:center;border:3px solid #fff;box-shadow:0 8px 18px rgba(16,17,20,.16);transition:all .7s cubic-bezier(.2,.8,.2,1);z-index:3}.person::after{content:attr(data-name);position:absolute;top:45px;background:#101114;color:#fff;font-size:10px;font-weight:800;white-space:nowrap;border-radius:8px;padding:4px 6px}.module{position:absolute;width:30px;height:30px;border-radius:10px;background:#17191f;color:#fff;display:grid;place-items:center;font-size:13px;box-shadow:0 6px 15px rgba(0,0,0,.14)}.module.off{background:#aaa}.scanline{position:absolute;left:8%;right:8%;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);top:18%;animation:scan 2.1s infinite ease-in-out}@keyframes scan{0%{top:18%;opacity:.2}50%{top:80%;opacity:1}100%{top:18%;opacity:.2}}.progress{height:8px;background:#eceef3;border-radius:999px;overflow:hidden}.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#ff8b76);border-radius:999px}.steps{display:flex;gap:6px;margin:18px 0}.steps span{height:4px;flex:1;background:#e4e6eb;border-radius:999px}.steps span.on{background:var(--ink)}
+.bottom{position:absolute;left:0;right:0;bottom:0;height:84px;background:rgba(255,255,255,.97);backdrop-filter:blur(14px);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:10px 6px 16px;z-index:10}.navbtn{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:4px;color:#868a93;font-size:10px;font-weight:750;min-width:60px}.navbtn span:first-child{font-size:19px}.navbtn.on{color:var(--ink)}
+.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}.metric{background:#f7f7f9;border-radius:14px;padding:11px}.metric b{display:block;font-size:15px}.metric span{font-size:10px;color:var(--muted)}.timeline{height:48px;border-radius:14px;background:#f1f2f5;position:relative;overflow:hidden;margin-top:8px}.seg{position:absolute;top:7px;bottom:7px;border-radius:8px}.seg.sleep{background:#6467d8}.seg.home{background:#ffb24d}.seg.away{background:#b7bbc7}.legend{display:flex;gap:12px;font-size:10px;color:var(--muted);margin-top:8px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}.activity{display:flex;gap:11px;padding:13px 0;border-bottom:1px solid var(--line)}.time{width:45px;color:var(--muted);font-size:11px}.event{flex:1}.event b{font-size:13px}.event p{font-size:11px;color:var(--muted);margin:4px 0 0;line-height:1.4}.guide-card{padding:0;overflow:hidden}.guide-visual{height:110px;background:linear-gradient(135deg,#fff1f4,#eef1ff);position:relative}.guide-body{padding:15px}.guide-body b{font-size:15px}.guide-body p{margin-top:6px}.toggle{width:46px;height:28px;border-radius:999px;background:#d8dae0;position:relative;transition:.2s}.toggle::after{content:"";position:absolute;width:22px;height:22px;background:#fff;border-radius:50%;top:3px;left:3px;box-shadow:0 2px 6px rgba(0,0,0,.18);transition:.2s}.toggle.on{background:var(--green)}.toggle.on::after{left:21px}.setting{display:flex;align-items:center;gap:12px;padding:14px 2px;border-bottom:1px solid var(--line)}.setting .si{width:38px;height:38px;border-radius:12px;background:#f1f2f6;display:grid;place-items:center}.setting .st{flex:1}.setting b{font-size:13px}.setting p{font-size:11px;color:var(--muted);margin:3px 0 0}.modal{position:absolute;inset:0;background:rgba(14,15,18,.35);display:none;align-items:flex-end;z-index:30}.modal.on{display:flex}.sheet{width:100%;background:white;border-radius:28px 28px 0 0;padding:20px 18px 28px;max-height:76%;overflow:auto;box-shadow:0 -20px 50px rgba(0,0,0,.18)}.sheet h2{margin:0 0 4px;font-size:20px}.sheet .bar{width:44px;height:4px;background:#d9dbe1;border-radius:999px;margin:0 auto 18px}.reason{display:flex;gap:10px;padding:10px 0}.reason .r-ico{width:34px;height:34px;background:#f3f4f8;border-radius:10px;display:grid;place-items:center}.reason b{font-size:12px}.reason div:last-child span{font-size:11px;color:var(--muted)}.toast{position:absolute;left:16px;right:16px;top:70px;background:#13151a;color:white;padding:12px 14px;border-radius:15px;font-size:12px;font-weight:700;transform:translateY(-120px);opacity:0;transition:.3s;z-index:50}.toast.show{transform:translateY(0);opacity:1}.fab{position:absolute;right:16px;bottom:100px;width:54px;height:54px;border-radius:18px;background:var(--ink);color:white;border:0;box-shadow:0 10px 24px rgba(0,0,0,.22);font-size:18px}.badge{font-size:10px;padding:4px 7px;border-radius:999px;background:#eff0f4;color:#666}.divider{height:1px;background:var(--line);margin:14px 0}.sliders{display:grid;gap:12px}.rangebox{padding:13px;border-radius:15px;background:#f6f7f9}.rangebox b{font-size:12px}.rangebar{height:10px;background:#e5e7ec;border-radius:999px;margin:10px 0;position:relative}.rangebar .fill{position:absolute;height:100%;border-radius:999px;background:var(--ink)}.temp{font-size:36px;font-weight:850;letter-spacing:-.03em}.mini-map-card{padding:12px;background:#f7f8fa;border-radius:18px}.chiprow{display:flex;gap:8px;overflow:auto;padding-bottom:4px}.chip{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 11px;font-size:11px;font-weight:750}.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}.debug{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;color:#9de7b7;background:#101216;border-radius:16px;padding:12px;line-height:1.6}.scrim{background:linear-gradient(135deg,#222,#555);height:190px;border-radius:18px;position:relative;overflow:hidden;color:white;display:grid;place-items:center}.face-ring{width:120px;height:160px;border:2px solid rgba(255,255,255,.85);border-radius:55% 55% 50% 50%;position:relative}.face-ring:after{content:"";position:absolute;left:-20px;right:-20px;top:50%;height:2px;background:var(--accent);box-shadow:0 0 20px var(--accent);animation:faceScan 1.8s infinite}@keyframes faceScan{0%{top:12%}50%{top:80%}100%{top:12%}}.wave{display:flex;gap:4px;align-items:center;justify-content:center;height:80px}.wave i{width:4px;background:var(--accent2);border-radius:999px;animation:wave 1s infinite ease-in-out}.wave i:nth-child(2){animation-delay:.1s}.wave i:nth-child(3){animation-delay:.2s}.wave i:nth-child(4){animation-delay:.3s}.wave i:nth-child(5){animation-delay:.4s}@keyframes wave{0%,100%{height:16px}50%{height:58px}}
+@media(max-width:500px){.stage{padding:0}.phone{width:100vw;height:100vh;border-radius:0;border:0}.status{display:none}.app{height:100vh}}
+</style>
+</head>
+<body>
+<div class="stage"><div class="phone"><div class="status"><span>9:41</span><span>●●●  100%</span></div><div class="app" id="app">
+<div class="toast" id="toast">완료되었습니다.</div>
+
+<section class="screen active" id="welcome">
+  <div class="hero">
+    <div class="logo"><div class="logo-dot">⌂</div>HomeMesh</div>
+    <h2>집이 사람을 따라<br>이해하기 시작합니다.</h2>
+    <p>각 공간의 모듈이 서로 상황을 공유해 가족의 위치와 생활 맥락을 끊김 없이 이해합니다.</p>
+    <div class="map" style="height:255px;margin:18px 0 22px">
+      <div class="room r1">Bedroom <small>Module A</small></div><div class="room r2">Bedroom 2</div><div class="room r3">Living Room <small>Module C</small></div><div class="room r4">Kitchen</div>
+      <div class="person" data-name="민수" style="left:70px;top:55px">🙂</div>
+      <div class="module" style="left:22px;top:84px">◉</div><div class="module" style="left:250px;top:177px">◉</div>
+    </div>
+    <button class="btn" onclick="go('privacyIntro')">우리 집 설정하기</button><div class="sp"></div><button class="btn secondary" onclick="toast('가족 그룹 참여 데모')">가족 그룹 참여하기</button>
+  </div>
+</section>
+
+<section class="screen" id="privacyIntro"><div class="topbar"><button class="ghost" onclick="go('welcome')">‹</button><h1>개인정보 보호</h1></div><div class="content onboarding">
+  <div class="eyebrow">Privacy by design</div><div class="title">영상과 음성은<br>집 안에서만 처리됩니다.</div><p class="subtitle">원본 미디어 대신 “민수 · 거실 · 휴식 중”과 같은 최소한의 상황 정보만 공유합니다.</p>
+  <div class="card"><div class="row between"><b>Camera / Mic</b><span>→</span><b>Local AI</b><span>→</span><b>Semantic Event</b></div><div class="divider"></div><p>원본 영상·음성은 외부 서버로 전송되지 않는다는 컨셉의 데모입니다.</p></div>
+  <div class="notice"><div class="ico">🔒</div><div><b>공간별 Privacy Mode</b><span>언제든 카메라나 음성 인식을 일시 정지할 수 있어요.</span></div></div>
+  <div class="notice"><div class="ico">🧠</div><div><b>로컬 인식</b><span>얼굴·목소리 특징은 모듈 안에서 처리하고 후처리된 상태만 공유합니다.</span></div></div>
+  <button class="btn" onclick="go('scanChoice')">확인하고 계속</button>
+</div></section>
+
+<section class="screen" id="scanChoice"><div class="topbar"><button class="ghost" onclick="go('privacyIntro')">‹</button><h1>우리 집 만들기</h1></div><div class="content onboarding">
+  <div class="steps"><span class="on"></span><span></span><span></span><span></span></div><div class="title">먼저 집의 공간을<br>알려주세요.</div><p class="subtitle">사람의 이동과 공간 관계를 이해하는 데 사용됩니다.</p>
+  <div class="choice" onclick="scanHome('로봇청소기')"><div class="icon">🤖</div><div class="meta"><b>로봇청소기로 가져오기</b><div>가장 간편한 방법 · 약 3분</div></div><div class="chev">›</div></div>
+  <div class="choice" onclick="scanHome('iPhone LiDAR')"><div class="icon">📱</div><div class="meta"><b>iPhone LiDAR로 스캔</b><div>지원되는 iPhone / iPad 필요</div></div><div class="chev">›</div></div>
+  <div class="choice" onclick="scanHome('수동')"><div class="icon">✚</div><div class="meta"><b>스캔 없이 시작</b><div>방 개수만 등록하고 나중에 수정</div></div><div class="chev">›</div></div>
+</div></section>
+
+<section class="screen" id="scanning"><div class="topbar"><h1>공간 스캔</h1></div><div class="content onboarding">
+  <div class="title" id="scanTitle">집을 스캔하고 있어요.</div><p class="subtitle">문, 벽, 주요 공간을 찾는 중입니다.</p>
+  <div class="map" style="height:400px"><div class="room r1">Bedroom</div><div class="room r2">Bedroom 2</div><div class="room r3">Living Room</div><div class="room r4">Kitchen</div><div class="scanline"></div></div>
+  <div class="sp"></div><div class="row between"><span class="tiny">공간 구조 생성</span><span class="tiny" id="scanPct">72%</span></div><div class="progress"><span style="width:72%" id="scanBar"></span></div><div class="sp"></div>
+  <button class="btn" onclick="go('mapConfirm')">스캔 결과 보기</button>
+</div></section>
+
+<section class="screen" id="mapConfirm"><div class="topbar"><button class="ghost" onclick="go('scanChoice')">‹</button><h1>공간 확인</h1></div><div class="content onboarding">
+  <div class="steps"><span class="on"></span><span class="on"></span><span></span><span></span></div><div class="title">집 구조를 확인해주세요.</div><p class="subtitle">방 이름은 언제든 다시 수정할 수 있습니다.</p>
+  <div class="map"><div class="room r1">Bedroom 1</div><div class="room r2">Bedroom 2</div><div class="room r3">Living Room</div><div class="room r4">Kitchen</div></div>
+  <div class="chiprow" style="margin-top:12px"><button class="chip on">침실 1</button><button class="chip">침실 2</button><button class="chip">거실</button><button class="chip">주방</button><button class="chip">+ 공간 추가</button></div><div class="sp"></div>
+  <button class="btn" onclick="go('pairing')">이 구조로 계속</button>
+</div></section>
+
+<section class="screen" id="pairing"><div class="topbar"><button class="ghost" onclick="go('mapConfirm')">‹</button><h1>모듈 연결</h1></div><div class="content onboarding">
+  <div class="steps"><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div><div class="title">근처의 Home Module을<br>찾았습니다.</div><p class="subtitle">사용할 모듈을 선택한 뒤 각 공간에 배치합니다.</p>
+  <div class="card"><div class="row between"><div><b>Home Module A</b><div class="tiny">신호 매우 좋음</div></div><span class="pill green">✓ 선택</span></div></div>
+  <div class="card"><div class="row between"><div><b>Home Module B</b><div class="tiny">신호 좋음</div></div><span class="pill green">✓ 선택</span></div></div>
+  <div class="card"><div class="row between"><div><b>Home Module C</b><div class="tiny">신호 매우 좋음</div></div><span class="pill green">✓ 선택</span></div></div>
+  <div class="card"><div class="row between"><div><b>Home Module D</b><div class="tiny">신호 좋음</div></div><span class="pill green">✓ 선택</span></div></div>
+  <button class="btn" onclick="go('placement')">4개 모듈 연결하기</button>
+</div></section>
+
+<section class="screen" id="placement"><div class="topbar"><button class="ghost" onclick="go('pairing')">‹</button><h1>모듈 배치</h1></div><div class="content onboarding">
+  <div class="title">각 모듈의 위치를<br>지정해주세요.</div><p class="subtitle">사람의 얼굴과 움직임을 넓게 확인할 수 있도록 가구에 가리지 않는 위치를 권장합니다.</p>
+  <div class="map"><div class="room r1">Bedroom 1</div><div class="room r2">Bedroom 2</div><div class="room r3">Living Room</div><div class="room r4">Kitchen</div><div class="module" style="left:26px;top:88px">A</div><div class="module" style="right:28px;top:88px">B</div><div class="module" style="left:26px;bottom:25px">C</div><div class="module" style="right:28px;bottom:25px">D</div></div>
+  <div class="notice"><div class="ico">📐</div><div><b>설치 팁</b><span>권장 높이 1.2~1.8m · 강한 역광, 가구 뒤쪽, 침대 바로 위는 피해주세요.</span></div></div>
+  <button class="btn" onclick="go('calibration')">거실 모듈 시야 확인</button>
+</div></section>
+
+<section class="screen" id="calibration"><div class="topbar"><button class="ghost" onclick="go('placement')">‹</button><h1>시야 확인</h1></div><div class="content onboarding">
+  <div class="title">Living Room Module</div><p class="subtitle">카메라가 주요 생활 영역을 충분히 보고 있나요?</p>
+  <div class="scrim"><div style="position:absolute;left:20px;top:16px" class="pill green">● Live preview</div><div style="text-align:center"><div style="font-size:42px">🛋️</div><div class="tiny" style="color:#ddd">Demo camera view</div></div></div>
+  <div class="metric-grid"><div class="metric"><b>✓ Sofa</b><span>visible</span></div><div class="metric"><b>✓ Entry</b><span>visible</span></div><div class="metric"><b>△ Dining</b><span>partial</span></div></div>
+  <div class="card"><div class="row between"><b>예상 인식 범위</b><b>91%</b></div><div class="progress" style="margin-top:10px"><span style="width:91%"></span></div></div>
+  <button class="btn" onclick="go('family')">위치가 좋아요</button><div class="sp"></div><button class="btn secondary" onclick="toast('Privacy Zone 편집 데모')">Privacy Zone 추가</button>
+</div></section>
+
+<section class="screen" id="family"><div class="topbar"><button class="ghost" onclick="go('calibration')">‹</button><h1>가족 등록</h1></div><div class="content onboarding">
+  <div class="title">이 집에서 함께 생활하는<br>사람을 등록해주세요.</div><p class="subtitle">실명 대신 닉네임만 등록해도 사용할 수 있습니다.</p>
+  <div class="card"><div class="row"><div style="font-size:32px">🙂</div><div style="flex:1"><b>민수</b><div class="tiny">본인 · 개인화 사용</div></div><span class="pill blue">등록 중</span></div></div>
+  <div class="choice" onclick="toast('가족 추가 데모')"><div class="icon">＋</div><div class="meta"><b>가족 구성원 추가</b><div>얼굴과 음성 프로필을 등록합니다.</div></div><div class="chev">›</div></div>
+  <button class="btn" onclick="go('faceEnroll')">민수 얼굴 등록하기</button>
+</div></section>
+
+<section class="screen" id="faceEnroll"><div class="topbar"><button class="ghost" onclick="go('family')">‹</button><h1>얼굴 등록</h1></div><div class="content onboarding">
+  <div class="eyebrow">Local only</div><div class="title">민수의 얼굴을<br>학습합니다.</div><p class="subtitle">얼굴 데이터는 이 집의 모듈 내부에서만 학습되고 처리됩니다.</p>
+  <div class="scrim"><div class="face-ring"></div><div style="position:absolute;bottom:16px">정면을 바라봐주세요</div></div>
+  <div class="card"><div class="row between"><b>등록 진행</b><span>3 / 3</span></div><div class="progress" style="margin-top:10px"><span style="width:100%"></span></div><div class="divider"></div><p>✓ 정면 &nbsp; ✓ 왼쪽 &nbsp; ✓ 오른쪽</p></div>
+  <button class="btn" onclick="go('faceTest')">얼굴 인식 테스트</button>
+</div></section>
+
+<section class="screen" id="faceTest"><div class="topbar"><button class="ghost" onclick="go('faceEnroll')">‹</button><h1>인식 테스트</h1></div><div class="content onboarding">
+  <div class="title">집 안에서 자유롭게<br>이동해보세요.</div><p class="subtitle">다른 공간의 모듈이 민수를 다시 발견하면 위치가 이어집니다.</p>
+  <div class="map" id="faceMap"><div class="room r1">Bedroom 1</div><div class="room r2">Bedroom 2</div><div class="room r3">Living Room</div><div class="room r4">Kitchen</div><div class="person" id="facePerson" data-name="민수" style="left:70px;top:70px">🙂</div><div class="module" style="left:25px;top:90px">A</div><div class="module" style="left:25px;bottom:25px">C</div></div>
+  <div class="card" id="handoffCard"><b>Bedroom 1에서 민수를 인식했습니다.</b><p>인식 신뢰도: 97%</p></div>
+  <button class="btn" onclick="runFaceHandoff()">Context Handoff 시연</button><div class="sp"></div><button class="btn secondary" onclick="go('voiceEnroll')">다음: 목소리 등록</button>
+</div></section>
+
+<section class="screen" id="voiceEnroll"><div class="topbar"><button class="ghost" onclick="go('faceTest')">‹</button><h1>목소리 등록</h1></div><div class="content onboarding">
+  <div class="eyebrow">Local only</div><div class="title">민수의 목소리를<br>학습합니다.</div><p class="subtitle">아래 문장을 평소 말하듯 읽어주세요. 원본 음성은 저장하지 않는 컨셉입니다.</p>
+  <div class="card" style="text-align:center"><div class="wave"><i></i><i></i><i></i><i></i><i></i></div><b>“오늘 저녁에는 집에서 쉬고 싶어.”</b><div class="tiny" style="margin-top:8px">Voice sample 2 / 3</div></div>
+  <div class="notice"><div class="ico">🎙️</div><div><b>Voice Profile</b><span>음성 특징만 로컬에 저장하고 모듈 간에는 식별 결과만 공유합니다.</span></div></div>
+  <button class="btn" onclick="go('combined')">목소리 테스트 완료</button>
+</div></section>
+
+<section class="screen" id="combined"><div class="topbar"><button class="ghost" onclick="go('voiceEnroll')">‹</button><h1>통합 인식</h1></div><div class="content onboarding">
+  <div class="title">두 가지 신호를<br>함께 확인합니다.</div><p class="subtitle">평소에는 얼굴, 목소리, 최근 이동 정보를 조합해 더 안정적으로 사용자를 구분합니다.</p>
+  <div class="card"><div class="row between"><span>Face</span><b>94%</b></div><div class="progress"><span style="width:94%"></span></div><div class="sp"></div><div class="row between"><span>Voice</span><b>87%</b></div><div class="progress"><span style="width:87%"></span></div><div class="sp"></div><div class="row between"><span>Location continuity</span><b>96%</b></div><div class="progress"><span style="width:96%"></span></div></div>
+  <div class="card"><div class="eyebrow">Combined identity</div><div style="font-size:30px;font-weight:850;margin-top:5px">민수 · 98%</div><p>Living Room에서 안정적으로 인식되었습니다.</p></div>
+  <button class="btn" onclick="go('preferences')">개인 설정 계속</button>
+</div></section>
+
+<section class="screen" id="preferences"><div class="topbar"><button class="ghost" onclick="go('combined')">‹</button><h1>개인 설정</h1></div><div class="content onboarding">
+  <div class="title">생활 리듬을<br>대략 알려주세요.</div><p class="subtitle">정확한 시간이 아니라 평소의 범위를 등록합니다. 실제 상황은 활동 상태와 함께 판단합니다.</p>
+  <div class="rangebox"><div class="row between"><b>평일 기상</b><span class="tiny">06:20 – 07:20</span></div><div class="rangebar"><div class="fill" style="left:25%;width:12%"></div></div></div>
+  <div class="rangebox"><div class="row between"><b>평일 취침</b><span class="tiny">23:30 – 00:30</span></div><div class="rangebar"><div class="fill" style="left:80%;width:14%"></div></div></div>
+  <div class="card"><div class="tiny">선호 실내 온도</div><div class="temp">23.0°</div><p>취침 중에는 23.5°C 선호</p></div>
+  <div class="card"><b>잠들었을 때</b><div class="setting"><div class="si">📺</div><div class="st"><b>TV 볼륨과 밝기 줄이기</b></div><div class="toggle on"></div></div><div class="setting"><div class="si">🧺</div><div class="st"><b>가전 알림음을 무음으로</b></div><div class="toggle on"></div></div><div class="setting"><div class="si">🤖</div><div class="st"><b>로봇청소기는 다른 방부터</b></div><div class="toggle on"></div></div></div>
+  <button class="btn" onclick="go('automationLevel')">다음</button>
+</div></section>
+
+<section class="screen" id="automationLevel"><div class="topbar"><button class="ghost" onclick="go('preferences')">‹</button><h1>AI 개입 수준</h1></div><div class="content onboarding">
+  <div class="title">HomeMesh가 얼마나<br>적극적으로 도울까요?</div><p class="subtitle">처음에는 보수적으로 시작하고 언제든 변경할 수 있습니다.</p>
+  <div class="choice"><div class="icon">💬</div><div class="meta"><b>Ask Me</b><div>행동 전 항상 물어봅니다.</div></div></div>
+  <div class="choice" style="border:2px solid #101114"><div class="icon">✨</div><div class="meta"><b>Assist · 추천</b><div>확실한 상황은 자동으로, 애매하면 물어봅니다.</div></div><span class="pill green">선택</span></div>
+  <div class="choice"><div class="icon">⚡</div><div class="meta"><b>Proactive</b><div>생활 패턴에 따라 대부분 자동으로 조절합니다.</div></div></div>
+  <button class="btn" onclick="go('setupDone')">설정 완료</button>
+</div></section>
+
+<section class="screen" id="setupDone"><div class="content onboarding" style="display:flex;flex-direction:column;justify-content:center">
+  <div style="font-size:54px;text-align:center">✓</div><div class="title" style="text-align:center">HomeMesh가<br>준비되었습니다.</div><p class="subtitle" style="text-align:center">집 전체의 공간·사람·상태를 하나의 Home State로 연결합니다.</p>
+  <div class="card"><div class="row between"><span>Rooms</span><b>4</b></div><div class="divider"></div><div class="row between"><span>Home Modules</span><b>4</b></div><div class="divider"></div><div class="row between"><span>Face / Voice Recognition</span><b>✓</b></div><div class="divider"></div><div class="row between"><span>Local Processing</span><b>✓</b></div></div>
+  <button class="btn" onclick="enterApp()">현재 집 상태 보기</button>
+</div></section>
+
+<section class="screen" id="home"><div class="topbar"><div class="logo" style="font-size:18px"><div class="logo-dot" style="width:28px;height:28px;border-radius:9px;font-size:14px">⌂</div>HomeMesh</div><button class="ghost" onclick="go('settings')">⚙</button></div><div class="content">
+  <div class="row between"><div><div class="tiny">우리 집</div><div style="font-size:22px;font-weight:850">현재 집은 편안한 상태예요.</div></div><span class="pill green">● Live</span></div>
+  <div class="map" style="margin-top:14px" id="homeMap"><div class="room r1">Bedroom 1<small>23° · 48%</small></div><div class="room r2">Bedroom 2<small>22° · 51%</small></div><div class="room r3">Living Room<small>24° · 47%</small></div><div class="room r4">Kitchen<small>25° · 52%</small></div><div class="person" id="homeP1" data-name="민수" style="left:70px;top:67px">🙂</div><div class="person" data-name="지현" style="left:278px;top:68px">🙂</div><div class="person" data-name="엄마" style="left:286px;top:205px">🙂</div><div class="module" style="left:25px;top:91px">A</div><div class="module" style="right:25px;top:91px">B</div><div class="module" style="left:25px;bottom:24px">C</div><div class="module" style="right:25px;bottom:24px">D</div></div>
+  <div class="chiprow" style="margin:12px 0"><button class="chip on">현재 상태</button><button class="chip">사람</button><button class="chip">온습도</button><button class="chip">모듈</button></div>
+  <div class="card" id="adaptCard"><div class="row between"><div><div class="eyebrow">HomeMesh is adapting</div><h3 id="adaptTitle">아직 자동 조정이 없어요.</h3></div><span class="badge">Assist</span></div><p id="adaptText">시연 재생 버튼으로 Context Handoff와 선제 제어 흐름을 확인해보세요.</p><div class="sp"></div><button class="btn sm soft" id="whyBtn" onclick="openWhy()" style="display:none">왜 이렇게 했나요?</button></div>
+  <div class="row" style="gap:8px"><button class="btn sm secondary" onclick="toggleGlobalPrivacy()">Privacy</button><button class="btn sm secondary">Guests</button><button class="btn sm secondary">Quiet</button><button class="btn sm secondary">Away</button></div>
+</div><button class="fab" onclick="runStory()">▶</button><div class="bottom" id="bottomNav"></div></section>
+
+<section class="screen" id="people"><div class="topbar"><h1>사람</h1></div><div class="content">
+  <div class="chiprow"><button class="chip on">민수</button><button class="chip">지현</button><button class="chip">엄마</button><button class="chip">아빠</button></div>
+  <div class="card"><div class="row"><div style="font-size:42px">🙂</div><div><div class="tiny">현재</div><h3>민수 · Bedroom 1</h3><span class="pill blue">Sleeping</span></div></div></div>
+  <div class="card"><h3>Typical Day</h3><div class="row between tiny"><span>00</span><span>06</span><span>12</span><span>18</span><span>24</span></div><div class="timeline"><div class="seg sleep" style="left:0;width:28%"></div><div class="seg home" style="left:28%;width:10%"></div><div class="seg away" style="left:38%;width:34%"></div><div class="seg home" style="left:72%;width:19%"></div><div class="seg sleep" style="left:91%;width:9%"></div></div><div class="legend"><span><i class="dot" style="background:#6467d8"></i>Sleep</span><span><i class="dot" style="background:#ffb24d"></i>Home</span><span><i class="dot" style="background:#b7bbc7"></i>Away</span></div></div>
+  <div class="card"><h3>HomeMesh가 학습한 선호</h3><p>TV 시청 중 잠들면 소리를 약 50% 줄이는 것을 선호</p><div class="row between" style="margin-top:12px"><span class="pill green">Confidence 81%</span><button class="btn sm secondary">수정</button></div></div>
+  <div class="card"><h3>개인화</h3><div class="setting"><div class="si">🌡️</div><div class="st"><b>선호 온도</b><p>23.0°C · 취침 23.5°C</p></div><span>›</span></div><div class="setting"><div class="si">🌙</div><div class="st"><b>취침 시간대</b><p>23:30–00:30</p></div><span>›</span></div></div>
+</div><div class="bottom" id="bottomNav2"></div></section>
+
+<section class="screen" id="activity"><div class="topbar"><h1>활동</h1></div><div class="content"><div class="title" style="font-size:22px">Today</div>
+  <div class="activity"><div class="time">23:41</div><div class="event"><b>민수가 거실에서 잠든 것으로 판단</b><p>TV / 조명 조정 · 세탁 알림음 음소거</p></div></div>
+  <div class="activity"><div class="time">21:17</div><div class="event"><b>Context Handoff</b><p>민수 · Bedroom 1 → Living Room</p></div></div>
+  <div class="activity"><div class="time">18:32</div><div class="event"><b>로봇청소기 순서 변경</b><p>사람이 없는 Living Room을 먼저 청소</p></div></div>
+  <div class="activity"><div class="time">02:14</div><div class="event"><b>야간 이동 감지</b><p>Hallway 12% · Kitchen 10% 조명</p></div></div>
+  <div class="activity"><div class="time">00:21</div><div class="event"><b>Privacy Mode 종료</b><p>Living Room의 위치 인식 신뢰도가 복구되었습니다.</p></div></div>
+</div><div class="bottom" id="bottomNav3"></div></section>
+
+<section class="screen" id="guide"><div class="topbar"><h1>사용 가이드</h1></div><div class="content"><div class="title" style="font-size:22px">HomeMesh가 일상에서<br>이렇게 도울 수 있어요.</div>
+  <div class="card guide-card"><div class="guide-visual"><div class="person" data-name="민수" style="left:145px;top:30px">😴</div><div style="position:absolute;right:22px;bottom:20px;font-size:32px">📺</div></div><div class="guide-body"><b>소파에서 잠들었어요</b><p>TV 볼륨과 밝기를 낮추고, 세탁 알림을 조용히 처리하며, 로봇청소기는 다른 방으로 보냅니다.</p></div></div>
+  <div class="card guide-card"><div class="guide-visual" style="background:linear-gradient(135deg,#eef7ff,#f3f2ff)"><div style="font-size:40px;position:absolute;left:24px;top:34px">🌙</div><div style="font-size:40px;position:absolute;right:26px;top:34px">💡</div></div><div class="guide-body"><b>한밤중에 물을 마시러 나왔어요</b><p>직전 상태가 수면 중이었다면 눈부시지 않게 이동 경로의 조명을 약하게 켭니다.</p></div></div>
+  <div class="card guide-card"><div class="guide-visual"><div style="font-size:40px;position:absolute;left:28px;top:34px">🤖</div><div style="font-size:40px;position:absolute;right:28px;top:34px">🧍</div></div><div class="guide-body"><b>사람이 적은 공간부터 청소해요</b><p>각 방의 재실 상태를 공유해 방해가 가장 적은 공간부터 청소 순서를 바꿉니다.</p></div></div>
+  <div class="card guide-card"><div class="guide-visual" style="background:linear-gradient(135deg,#f6f6f6,#eaf7f1)"><div style="font-size:40px;position:absolute;left:22px;top:35px">🔒</div><div style="font-size:40px;position:absolute;right:24px;top:35px">🧠</div></div><div class="guide-body"><b>카메라를 꺼도 상황은 이어져요</b><p>Privacy Mode 중에는 마지막 위치와 다른 모듈의 관측을 사용해 Home State를 안전하게 갱신합니다.</p></div></div>
+</div><div class="bottom" id="bottomNav4"></div></section>
+
+<section class="screen" id="settings"><div class="topbar"><h1>설정</h1></div><div class="content"><div class="card"><div class="setting"><div class="si">⌂</div><div class="st"><b>Rooms & Map</b><p>공간 구조와 이름 관리</p></div><span>›</span></div><div class="setting"><div class="si">◉</div><div class="st"><b>Home Modules</b><p>4개 연결됨</p></div><span>›</span></div><div class="setting"><div class="si">👥</div><div class="st"><b>Family</b><p>4명 등록</p></div><span>›</span></div></div>
+  <div class="card"><div class="setting"><div class="si">🔒</div><div class="st"><b>Privacy</b><p>공간별 카메라·음성 인식</p></div><button class="btn sm secondary" onclick="openPrivacy()">열기</button></div><div class="setting"><div class="si">✨</div><div class="st"><b>Automation Level</b><p>Assist</p></div><span>›</span></div><div class="setting"><div class="si">🔔</div><div class="st"><b>Notifications</b><p>중요 활동만</p></div><span>›</span></div></div>
+  <div class="card"><div class="setting"><div class="si">🧪</div><div class="st"><b>Developer / Demo Mode</b><p>agent log와 confidence 표시</p></div><div class="toggle" id="debugToggle" onclick="toggleDebug()"></div></div><div class="debug" id="debugBox" style="display:none">[Bedroom-A] P1 exit detected\n[SharedState] P1 location → transition\n[Living-C] P1 reacquired (0.97)\n[Planner] vacuum reroute accepted</div></div>
+</div><div class="bottom" id="bottomNav5"></div></section>
+
+<div class="modal" id="whyModal" onclick="if(event.target===this)closeModal('whyModal')"><div class="sheet"><div class="bar"></div><h2>왜 이렇게 했나요?</h2><p class="subtitle">민수가 Living Room 소파에서 잠든 것으로 판단했습니다.</p><div class="reason"><div class="r-ico">🙂</div><div><b>Identity</b><br><span>민수 · 얼굴/위치 연속성 확인</span></div></div><div class="reason"><div class="r-ico">🛋️</div><div><b>Posture</b><br><span>소파에 누운 자세</span></div></div><div class="reason"><div class="r-ico">◌</div><div><b>Motion</b><br><span>9분간 움직임 매우 낮음</span></div></div><div class="card"><div class="row between"><b>Sleep likelihood</b><b>88%</b></div><div class="progress" style="margin-top:10px"><span style="width:88%"></span></div></div><div class="card"><b>실행된 조정</b><p style="margin-top:8px">TV 볼륨 14 → 6<br>조명 55% → 15%<br>세탁 알림음 → 무음<br>로봇청소기 → Bedroom 우선</p></div><div class="row"><button class="btn secondary" onclick="toast('피드백: 아니요')">아니요</button><button class="btn" onclick="toast('피드백을 학습 신호로 저장')">맞아요</button></div></div></div>
+
+<div class="modal" id="privacyModal" onclick="if(event.target===this)closeModal('privacyModal')"><div class="sheet"><div class="bar"></div><h2>Privacy</h2><p class="subtitle">공간별 인식 기능을 즉시 변경할 수 있습니다.</p><div class="setting"><div class="si">🛋️</div><div class="st"><b>Living Room</b><p>Camera · Voice · Activity</p></div><div class="toggle on" id="livingPrivacy" onclick="togglePrivacy(this)"></div></div><div class="setting"><div class="si">🛏️</div><div class="st"><b>Bedroom 1</b><p>Camera · Voice · Activity</p></div><div class="toggle on"></div></div><div class="card" style="margin-top:14px"><div class="row between"><span>Raw media storage</span><b>Never</b></div><div class="divider"></div><div class="row between"><span>Cloud upload</span><b>Never</b></div><div class="divider"></div><div class="row between"><span>Shared between modules</span><b>Semantic events</b></div></div><button class="btn" onclick="closeModal('privacyModal')">완료</button></div></div>
+
+</div></div></div>
+<script>
+const screens=['welcome','privacyIntro','scanChoice','scanning','mapConfirm','pairing','placement','calibration','family','faceEnroll','faceTest','voiceEnroll','combined','preferences','automationLevel','setupDone','home','people','activity','guide','settings'];
+let storyRunning=false, privacyOn=false;
+function go(id){screens.forEach(s=>document.getElementById(s).classList.remove('active'));document.getElementById(id).classList.add('active'); if(['home','people','activity','guide','settings'].includes(id)) renderNav(id);}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
+function scanHome(type){go('scanning');document.getElementById('scanTitle').textContent= type==='수동' ? '공간을 구성하고 있어요.' : `${type}로 집을 스캔하고 있어요.`;let p=42;const bar=document.getElementById('scanBar'), pct=document.getElementById('scanPct');const iv=setInterval(()=>{p=Math.min(100,p+8);bar.style.width=p+'%';pct.textContent=p+'%';if(p>=100)clearInterval(iv)},180)}
+function runFaceHandoff(){const p=document.getElementById('facePerson'),c=document.getElementById('handoffCard');c.innerHTML='<b>Bedroom 1에서 민수가 나갔습니다.</b><p>다른 모듈에서 재탐색 중...</p>';setTimeout(()=>{p.style.left='92px';p.style.top='196px';c.innerHTML='<b>Living Room Module이 민수를 다시 찾았습니다.</b><p>Context Handoff 완료 · 신뢰도 97%</p>';toast('Bedroom 1 → Living Room')},850)}
+function enterApp(){go('home');renderNav('home')}
+function renderNav(active){const html=[['home','⌂','홈'],['people','◉','사람'],['activity','≡','활동'],['guide','?','가이드'],['settings','⚙','설정']].map(([id,ic,tx])=>`<button class="navbtn ${id===active?'on':''}" onclick="go('${id}')"><span>${ic}</span><span>${tx}</span></button>`).join('');['bottomNav','bottomNav2','bottomNav3','bottomNav4','bottomNav5'].forEach(id=>{const e=document.getElementById(id);if(e)e.innerHTML=html})}
+function runStory(){if(storyRunning)return;storyRunning=true;const p=document.getElementById('homeP1'),title=document.getElementById('adaptTitle'),txt=document.getElementById('adaptText'),why=document.getElementById('whyBtn');toast('시연 시작 · Bedroom → Living Room');setTimeout(()=>{p.style.left='105px';p.style.top='198px';title.textContent='민수가 거실로 이동했어요.';txt.textContent='Bedroom Module에서 사라진 뒤 Living Room Module이 다시 인식해 Context Handoff를 완료했습니다.'},700);setTimeout(()=>{toast('Sleep likelihood 88%');title.textContent='민수가 잠든 것으로 보여 환경을 조정했어요.';txt.textContent='TV 볼륨과 조명을 낮추고, 세탁 알림음을 무음으로 변경했으며 로봇청소기는 다른 방부터 청소합니다.';why.style.display='inline-flex'},2300);setTimeout(()=>{storyRunning=false},3000)}
+function openWhy(){document.getElementById('whyModal').classList.add('on')}function openPrivacy(){document.getElementById('privacyModal').classList.add('on')}function closeModal(id){document.getElementById(id).classList.remove('on')}
+function togglePrivacy(el){el.classList.toggle('on');privacyOn=!el.classList.contains('on');toast(privacyOn?'Living Room Camera 비활성화':'Living Room Camera 활성화')}
+function toggleGlobalPrivacy(){openPrivacy()}
+function toggleDebug(){const t=document.getElementById('debugToggle'),b=document.getElementById('debugBox');t.classList.toggle('on');b.style.display=t.classList.contains('on')?'block':'none'}
+renderNav('home');
+</script>
+</body>
+</html>
